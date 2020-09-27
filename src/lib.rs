@@ -149,19 +149,8 @@ pub struct EntityInstance {
     pub def_uid: usize,
     pub x: isize,
     pub y: isize,
-    // pub field_instances: Vec<FieldInstance>, currently unsupported
-}
 
-#[derive(Deserialize, Debug)]
-#[serde(rename_all(deserialize = "camelCase"))]
-pub struct FieldInstance {
-    #[serde(rename(deserialize = "__identifier"))]
-    pub identifier: String,
-
-    #[serde(rename(deserialize = "__value"))]
-    pub value: FieldInstanceValue,
-
-    pub def_uid: usize,
+    pub field_instances: Vec<FieldInstanceValue>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -170,8 +159,9 @@ pub enum FieldInstanceValue {
     Int(IntField),
     Float(FloatField),
     Bool(BoolField),
-    Str(StringField),
-    StrArray(StringArrayField),
+    String(StringField),
+    Color(StringField),
+    Array(StringArrayField),
 }
 
 #[derive(Deserialize, Debug)]

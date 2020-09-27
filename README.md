@@ -9,9 +9,8 @@ No guarantees about compatibilty or ongoing support are made :D
 
 ## Limitations
 
- - `defs` are not parsed
- - `entityInstance.fieldInstances` are not currently
-   parsed, but support is planned
+- `defs` are not parsed
+- Array type `entityInstance.fieldInstances` are not parsed
 
 ## Usage
 
@@ -26,8 +25,6 @@ See the `examples` folder for some example usage or run the examples with
 ```bash
 cargo run --example parse_sample
 ```
-
-
 
 ## LICENSE
 
