@@ -1,8 +1,6 @@
 /// A basic parser for LEd files
 /// See https://deepnight.net/docs/led/json/ for the format
 /// Configured for version 0.2.1 of the editor, version 1 JSON files
-use anyhow;
-use serde;
 use serde::Deserialize;
 use serde_json::from_str;
 

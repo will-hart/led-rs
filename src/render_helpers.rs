@@ -74,7 +74,7 @@ impl RenderGrid {
 
     // pub fn iter_tiles(&self) -> std::slice::Iter<'i, std::slice::Iter<'i, &RenderCell>> {
     pub fn rows(&self) -> std::slice::Chunks<'_, RenderCell> {
-        self.tiles.chunks(self.grid_size.0).into_iter()
+        self.tiles.chunks(self.grid_size.0)
     }
 }
 
