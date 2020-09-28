@@ -18,3 +18,7 @@ path = "examples/parse_empty.rs"
 [[example]]
 name = "parse_sample"
 path = "examples/parse_sample.rs"
+
+[[example]]
+name = "render_helpers"
+path = "examples/render_data.rs"

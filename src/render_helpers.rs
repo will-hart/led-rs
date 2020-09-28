@@ -1,5 +1,6 @@
 use crate::Project;
 
+#[derive(Clone, Default, Debug)]
 pub struct Point(usize, usize);
 
 impl From<(usize, usize)> for Point {
@@ -36,18 +37,82 @@ pub fn tile_id_to_atlas_pixel(
     )
 }
 
+#[derive(Clone, Debug)]
 pub struct RenderCell {
-    pub world_pos: Point,
-    pub atlast_pos: Point,
-    pub atlas_size: Point,
+    pub tile_id: usize,
+    pub atlas_pos: Point,
+}
+
+#[derive(Debug)]
+pub struct RenderGrid {
+    pub tiles: Vec<RenderCell>,
+    pub tile_size: Point,
+    pub grid_size: Point,
+}
+
+impl RenderGrid {
+    pub fn new(num_cells: usize, tile_size: Point, grid_size: Point) -> Self {
+        RenderGrid {
+            tiles: vec![
+                RenderCell {
+                    tile_id: 0,
+                    atlas_pos: Point::default(),
+                };
+                num_cells
+            ],
+            tile_size,
+            grid_size,
+        }
+    }
+
+    pub fn get_tile(&self, x: usize, y: usize) -> &RenderCell {
+        let coord_id = grid_point_to_coord((x, y).into(), self.grid_size.0);
+        &self.tiles[coord_id]
+    }
 }
 
 pub trait ToRenderGrid {
-    fn to_render_grid(&self) -> Vec<RenderCell>;
+    /// Creates a render grid with the layers merged down into a single layer.
+    /// Excludes entity layers and intgrid layers but includes autotile and tile layers
+    fn to_merged_render_grid(&self, level: usize) -> Result<RenderGrid, anyhow::Error>;
+
+    // fn to_render_grid(&self, layer: isize) -> Result<Vec<RenderCell>, anyhow::Error>;
 }
 
 impl ToRenderGrid for Project {
-    fn to_render_grid(&self) -> Vec<RenderCell> {
-        vec![]
+    fn to_merged_render_grid(&self, level: usize) -> Result<RenderGrid, anyhow::Error> {
+        if self.levels.len() < level {
+            panic!("Level not found in the parsed map");
+        }
+
+        let level = &self.levels[level];
+
+        // allocate the render grid
+        let first_layer = &level.layer_instances[0];
+        let cell_count = first_layer.grid_width * first_layer.grid_height;
+        let mut grid = RenderGrid::new(
+            cell_count,
+            Point(16, 16),
+            Point(first_layer.grid_width, first_layer.grid_height),
+        );
+
+        // iterate the layers. Run in reverse as we "draw up" the stack
+        level.layer_instances.iter().rev().for_each(|layer| {
+            layer.auto_tiles.iter().for_each(|rule| {
+                rule.tiles.iter().for_each(|tile| {
+                    grid.tiles[tile.coord_id].tile_id = tile.tile_id;
+                    grid.tiles[tile.coord_id].atlas_pos.0 = tile.tile_x;
+                    grid.tiles[tile.coord_id].atlas_pos.1 = tile.tile_y;
+                })
+            });
+
+            layer.grid_tiles.iter().for_each(|tile| {
+                grid.tiles[tile.coord_id].tile_id = tile.tile_id;
+                grid.tiles[tile.coord_id].atlas_pos.0 = tile.tile_x;
+                grid.tiles[tile.coord_id].atlas_pos.1 = tile.tile_x;
+            })
+        });
+
+        Ok(grid)
     }
 }
