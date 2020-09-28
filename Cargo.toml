@@ -1,8 +1,12 @@
 [package]
 name = "led-rs"
 version = "0.1.0"
+description = "A parser for the LEd 2D level editor"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/will-hart/led-rs"
 authors = ["Will Hart <hart.wl@gmail.com>"]
 edition = "2018"
+keywords = ["gamedev"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
