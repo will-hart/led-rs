@@ -1,7 +1,7 @@
 use crate::Project;
 
 #[derive(Clone, Default, Debug)]
-pub struct Point(usize, usize);
+pub struct Point(pub usize, pub usize);
 
 impl From<(usize, usize)> for Point {
     fn from(tup: (usize, usize)) -> Self {
@@ -39,6 +39,7 @@ pub fn tile_id_to_atlas_pixel(
 
 #[derive(Clone, Debug)]
 pub struct RenderCell {
+    pub is_empty: bool,
     pub tile_id: usize,
     pub atlas_pos: Point,
 }
@@ -55,6 +56,7 @@ impl RenderGrid {
         RenderGrid {
             tiles: vec![
                 RenderCell {
+                    is_empty: true,
                     tile_id: 0,
                     atlas_pos: Point::default(),
                 };
@@ -68,6 +70,11 @@ impl RenderGrid {
     pub fn get_tile(&self, x: usize, y: usize) -> &RenderCell {
         let coord_id = grid_point_to_coord((x, y).into(), self.grid_size.0);
         &self.tiles[coord_id]
+    }
+
+    // pub fn iter_tiles(&self) -> std::slice::Iter<'i, std::slice::Iter<'i, &RenderCell>> {
+    pub fn rows(&self) -> std::slice::Chunks<'_, RenderCell> {
+        self.tiles.chunks(self.grid_size.0).into_iter()
     }
 }
 
@@ -100,6 +107,7 @@ impl ToRenderGrid for Project {
         level.layer_instances.iter().rev().for_each(|layer| {
             layer.auto_tiles.iter().for_each(|rule| {
                 rule.tiles.iter().for_each(|tile| {
+                    grid.tiles[tile.coord_id].is_empty = false;
                     grid.tiles[tile.coord_id].tile_id = tile.tile_id;
                     grid.tiles[tile.coord_id].atlas_pos.0 = tile.tile_x;
                     grid.tiles[tile.coord_id].atlas_pos.1 = tile.tile_y;
@@ -107,6 +115,7 @@ impl ToRenderGrid for Project {
             });
 
             layer.grid_tiles.iter().for_each(|tile| {
+                grid.tiles[tile.coord_id].is_empty = false;
                 grid.tiles[tile.coord_id].tile_id = tile.tile_id;
                 grid.tiles[tile.coord_id].atlas_pos.0 = tile.tile_x;
                 grid.tiles[tile.coord_id].atlas_pos.1 = tile.tile_x;

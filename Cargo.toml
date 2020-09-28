@@ -22,3 +22,7 @@ path = "examples/parse_sample.rs"
 [[example]]
 name = "render_helpers"
 path = "examples/render_data.rs"
+
+[[example]]
+name = "iter_render_helpers"
+path = "examples/iter_render_data.rs"
