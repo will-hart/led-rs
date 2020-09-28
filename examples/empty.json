@@ -7,7 +7,7 @@
     "url": "https://deepnight.net/tools/led-2d-level-editor/"
   },
   "name": "My empty project",
-  "jsonVersion": 1,
+  "jsonVersion": "1",
   "defaultPivotX": 0.0,
   "defaultPivotY": 0.0,
   "defaultGridSize": 16,

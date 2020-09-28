@@ -3,11 +3,11 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-fn main() {
-    // Get the file path
+/// Parses and prints a single map file
+fn parse_file(file_name: &str) {
     let mut file_path = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     file_path.push("examples");
-    file_path.push("autolayers_advanced_demo");
+    file_path.push(file_name);
     file_path.set_extension("json");
 
     let mut file = File::open(file_path).unwrap();
@@ -15,4 +15,9 @@ fn main() {
     file.read_to_string(&mut contents).unwrap();
 
     println!("{:?}", Project::parse_json(contents).unwrap());
+}
+
+fn main() {
+    parse_file("autolayers_advanced_demo");
+    parse_file("simple_with_array");
 }

@@ -156,70 +156,44 @@ pub struct EntityInstance {
 #[derive(Deserialize, Debug)]
 #[serde(tag = "__type")]
 pub enum FieldInstanceValue {
-    Int(IntField),
-    Float(FloatField),
-    Bool(BoolField),
-    String(StringField),
-    Color(StringField),
-    Array(StringArrayField),
+    Int(ScalarField<isize>),
+    Float(ScalarField<f32>),
+    Bool(ScalarField<bool>),
+    String(ScalarField<String>),
+    Color(ScalarField<String>),
+
+    #[serde(rename = "Array<Int>")]
+    IntArray(ArrayField<isize>),
+    #[serde(rename = "Array<Float>")]
+    FloatArray(ArrayField<f32>),
+    #[serde(rename = "Array<Bool>")]
+    BoolArray(ArrayField<bool>),
+    #[serde(rename = "Array<String>")]
+    StringArray(ArrayField<String>),
+    #[serde(rename = "Array<Color>")]
+    ColorArray(ArrayField<String>),
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all(deserialize = "camelCase"))]
-pub struct IntField {
+pub struct ScalarField<T> {
     #[serde(rename(deserialize = "__identifier"))]
     pub identifier: String,
 
     #[serde(rename(deserialize = "__value"))]
-    pub value: isize,
+    pub value: T,
 
     pub def_uid: usize,
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all(deserialize = "camelCase"))]
-pub struct FloatField {
+pub struct ArrayField<T> {
     #[serde(rename(deserialize = "__identifier"))]
     pub identifier: String,
 
     #[serde(rename(deserialize = "__value"))]
-    pub value: f64,
-
-    pub def_uid: usize,
-}
-
-#[derive(Deserialize, Debug)]
-#[serde(rename_all(deserialize = "camelCase"))]
-pub struct BoolField {
-    #[serde(rename(deserialize = "__identifier"))]
-    pub identifier: String,
-
-    #[serde(rename(deserialize = "__value"))]
-    pub value: bool,
-
-    pub def_uid: usize,
-}
-
-#[derive(Deserialize, Debug)]
-#[serde(rename_all(deserialize = "camelCase"))]
-pub struct StringField {
-    #[serde(rename(deserialize = "__identifier"))]
-    pub identifier: String,
-
-    #[serde(rename(deserialize = "__value"))]
-    pub value: String,
-
-    pub def_uid: usize,
-} // include enum, colour
-
-#[derive(Deserialize, Debug)]
-#[serde(rename_all(deserialize = "camelCase"))]
-pub struct StringArrayField {
-    #[serde(rename(deserialize = "__identifier"))]
-    pub identifier: String,
-
-    #[serde(rename(deserialize = "__value"))]
-    pub value: Vec<String>,
+    pub value: Vec<T>,
 
     pub def_uid: usize,
 }

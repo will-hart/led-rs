@@ -10,7 +10,7 @@ No guarantees about compatibilty or ongoing support are made :D
 ## Limitations
 
 - `defs` are not parsed
-- Array type `entityInstance.fieldInstances` are not parsed
+- most "API" functions are not included
 
 ## Usage
 
